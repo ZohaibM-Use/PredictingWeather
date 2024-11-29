@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style_result.css') }}">
+<script src="{{ url_for('static', filename='script_result.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% if prediction == "Error: Please enter a date after 1970." %}
+            <div class="box error">
+                <p>{{ prediction }}</p>
+            </div>
+        {% else %}
+            <div class="boxes">
+                <div class="box" id="prediction">
+                    <h2>Prediction for {{ date }}</h2>
+                    <p>The predicted maximum temperature is: <strong>{{ prediction }}°F</strong></p>
+                </div>
+
+                <div class="box">
+                    <h2>Temperature Predictions for the Next 7 Days</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Predicted Temperature (°F)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for day, temp in next_seven_days %}
+                            <tr>
+                                <td>{{ day }}</td>
+                                <td>{{ temp }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="temperature-plot-container">
+                <h2>Temperature Plot</h2>
+                {% if plot_img %}
+                    <img src="{{ plot_img }}" alt="Temperature Plot" class="temperature-plot">
+                {% else %}
+                    <p>No plot available.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <a href="/" class="button">Back to Home</a>
+    <script>
+        window.predictionTemp = {{ prediction | tojson }};  // This makes it accessible in the external JS file
+    </script>
+{% endblock %}
